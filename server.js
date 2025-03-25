@@ -21,6 +21,14 @@ app.post("/add", (req, res) => {
     res.sendStatus(200);
 });
 
+app.delete("/delete/:index", (req, res) => {
+    const index = parseInt(req.params.index);
+    if (!isNaN(index) && index >= 0 && index < items.length) {
+        items.splice(index, 1);
+    }
+    res.json(items);
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
