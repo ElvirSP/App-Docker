@@ -29,6 +29,15 @@ app.delete("/delete/:index", (req, res) => {
     res.json(items);
 });
 
+app.put("/update/:index", (req, res) => {
+    const index = parseInt(req.params.index);
+    const { newItem } = req.body;
+    if (!isNaN(index) && index >= 0 && index < items.length && newItem) {
+        items[index] = newItem;
+    }
+    res.json(items);
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

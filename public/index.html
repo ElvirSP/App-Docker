@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practica</title>
+    <title>CRUD de prueba</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>CRUD de prueba</h1>
-    <input type="text" id="item" placeholder="Ingrese un item" />
-    <button onclick="addItem()">Agregar</button>
-    <ul id="itemList"></ul>
+    <div class="container">
+        <h1>Lista de Tareas</h1>
+        <div class="input-container">
+            <input type="text" id="item" placeholder="Ingrese un item" />
+            <button onclick="addItem()">Agregar</button>
+        </div>
+        <ul id="itemList"></ul>
+    </div>
 
     <script>
         async function fetchItems() {
@@ -19,13 +24,14 @@
             list.innerHTML = "";
             items.forEach((item, index) => {
                 const li = document.createElement("li");
-                li.textContent = item;
-                
-                const deleteButton = document.createElement("button");
-                deleteButton.textContent = "Eliminar";
-                deleteButton.onclick = () => deleteItem(index);
-                
-                li.appendChild(deleteButton);
+                li.classList.add("list-item");
+                li.innerHTML = `
+                    <span class="item-text">${item}</span>
+                    <div class="buttons">
+                        <button class="edit-btn" onclick="updateItem(${index}, '${item}')">Editar</button>
+                        <button class="delete-btn" onclick="deleteItem(${index})">Eliminar</button>
+                    </div>
+                `;
                 list.appendChild(li);
             });
         }
@@ -47,6 +53,18 @@
                 method: "DELETE"
             });
             fetchItems();
+        }
+
+        async function updateItem(index, oldItem) {
+            const newItem = prompt("Editar item:", oldItem);
+            if (newItem && newItem.trim() !== "") {
+                await fetch(`/update/${index}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ newItem })
+                });
+                fetchItems();
+            }
         }
 
         fetchItems();
